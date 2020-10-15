@@ -19,9 +19,9 @@ namespace WebApp.Identity.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<MyUser> userManager;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
+        public HomeController(ILogger<HomeController> logger, UserManager<MyUser> userManager)
         {
             _logger = logger;
             this.userManager = userManager;
@@ -89,7 +89,7 @@ namespace WebApp.Identity.Controllers
                 var user = await this.userManager.FindByNameAsync(model.UserName);
                 if (user == null)
                 {
-                    user = new IdentityUser()
+                    user = new MyUser()
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = model.UserName,

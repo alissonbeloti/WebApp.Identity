@@ -32,11 +32,11 @@ namespace WebApp.Identity
             var migrationAssembly = typeof(Startup)
                 .GetTypeInfo().Assembly
                 .GetName().Name;
-            services.AddDbContext<IdentityDbContext>(opt => opt.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
+            services.AddDbContext<MyUserDbContext>(opt => opt.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             //services.AddIdentityCore<MyUser>(opt => { });
             //services.AddScoped<IUserStore<MyUser>, MyUserStore>();
-            services.AddIdentityCore<IdentityUser>(opt => { });
-            services.AddScoped<IUserStore<IdentityUser>, UserOnlyStore<IdentityUser, IdentityDbContext>>();
+            services.AddIdentityCore<MyUser>(opt => { });
+            services.AddScoped<IUserStore<MyUser>, UserOnlyStore<MyUser, MyUserDbContext>>();
             services.AddAuthentication("cookies").AddCookie("cookies", opt => opt.LoginPath = "/Home/Login");
         }
 
