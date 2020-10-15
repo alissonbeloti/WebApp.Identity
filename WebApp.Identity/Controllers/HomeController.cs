@@ -20,11 +20,14 @@ namespace WebApp.Identity.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<MyUser> userManager;
+        private readonly IUserClaimsPrincipalFactory<MyUser> userClaimsPrincipalFactory;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<MyUser> userManager)
+        public HomeController(ILogger<HomeController> logger, UserManager<MyUser> userManager,
+            IUserClaimsPrincipalFactory<MyUser> userClaimsPrincipalFactory)
         {
             _logger = logger;
             this.userManager = userManager;
+            this.userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         }
 
         public IActionResult Index()
@@ -50,10 +53,12 @@ namespace WebApp.Identity.Controllers
                 var user = await this.userManager.FindByNameAsync(model.UserName);
                 if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    var identity = new ClaimsIdentity("cookies");
-                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
-                    identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-                    await HttpContext.SignInAsync("cookies", new ClaimsPrincipal(identity));
+                    //var identity = new ClaimsIdentity("Identity.Application");
+                    //identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+                    //identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+                    //await HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(identity));
+                    var principal = await this.userClaimsPrincipalFactory.CreateAsync(user);
+                    await HttpContext.SignInAsync("Identity.Application", principal); //Cookie Padrão
                     return RedirectToAction("About");
                 }
 
